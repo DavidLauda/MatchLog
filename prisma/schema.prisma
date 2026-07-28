@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String?  @unique
+  createdAt DateTime @default(now())
+
+  ratings          Rating[]
+  lists            MatchList[]
+  followedEntities FollowedEntity[]
+}
+
+model Team {
+  id         String  @id @default(cuid())
+  externalId String  @unique // ID from the sports API
+  name       String
+  logoUrl    String?
+  country    String?
+
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+}
+
+model Match {
+  id          String   @id @default(cuid())
+  externalId  String   @unique // ID from the sports API, used to avoid re-fetching
+  sport       String   @default("football")
+  competition String
+  season      String?
+  matchDate   DateTime
+
+  homeTeamId  String
+  homeTeam    Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId  String
+  awayTeam    Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  homeScore   Int?
+  awayScore   Int?
+
+  // Full raw stats payload from the API (lineups, cards, xG, etc.)
+  // Keeping this as JSON means adding new stat types never requires a migration.
+  statsJson   Json?
+
+  createdAt   DateTime @default(now())
+
+  ratings     Rating[]
+  listItems   MatchListItem[]
+
+  @@index([matchDate])
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id])
+
+  stars     Int      // 1–5 (consider storing as 1–10 internally if you want half-stars)
+  review    String?
+  tags      String[] @default([])
+  watchedAt DateTime @default(now()) // date the user logged/watched it, distinct from matchDate
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, matchId]) // one rating per user per match
+}
+
+model MatchList {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+
+  items       MatchListItem[]
+}
+
+model MatchListItem {
+  id        String    @id @default(cuid())
+  listId    String
+  list      MatchList @relation(fields: [listId], references: [id])
+  matchId   String
+  match     Match     @relation(fields: [matchId], references: [id])
+  order     Int       @default(0)
+
+  @@unique([listId, matchId])
+}
+
+model FollowedEntity {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  externalId String   // API ID (e.g. team ID, league ID, or country name/ID)
+  name       String   // e.g. "Arsenal", "Premier League", "England"
+  type       String   // "club" | "league" | "country"
+  logoUrl    String?
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, externalId, type])
+}
+

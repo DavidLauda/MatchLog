@@ -1,0 +1,395 @@
+'use client'
+
+import { useState, useEffect, useTransition } from 'react'
+import { createPortal } from 'react-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, Trophy, Globe, Shield, X, Loader2, Sparkles, CheckCircle2 } from 'lucide-react'
+import { FollowButton } from './FollowButton'
+import { TeamLogo } from './TeamLogo'
+import { searchTeamsAction } from '@/app/actions'
+
+interface FollowModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialFollows: { externalId: string; type: string }[];
+}
+
+const TOP_CLUBS = [
+  { externalId: '133604', name: 'Arsenal', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png', country: 'England' },
+  { externalId: '133613', name: 'Manchester City', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png', country: 'England' },
+  { externalId: '133738', name: 'Real Madrid', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/7b8c2c1611746765.png', country: 'Spain' },
+  { externalId: '133739', name: 'Barcelona', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/s7754d1611746816.png', country: 'Spain' },
+  { externalId: '133664', name: 'Bayern Munich', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/qwvrst1467462947.png', country: 'Germany' },
+  { externalId: '133601', name: 'Liverpool', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/c8h4u51711200230.png', country: 'England' },
+  { externalId: '133612', name: 'Manchester United', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png', country: 'England' },
+  { externalId: '133602', name: 'Chelsea', type: 'club' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/team/badge/yvwvtu1448813215.png', country: 'England' },
+]
+
+const TOP_LEAGUES = [
+  { externalId: '4328', name: 'English Premier League', type: 'league' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/gasy9d1737743125.png' },
+  { externalId: '4480', name: 'UEFA Champions League', type: 'league' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/dtu13t1542818664.png' },
+  { externalId: '4335', name: 'Spanish La Liga', type: 'league' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/7onmyv1534768422.png' },
+  { externalId: '4331', name: 'German Bundesliga', type: 'league' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/0j55yv1534764799.png' },
+  { externalId: '4332', name: 'Italian Serie A', type: 'league' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/t06u5t1753702175.png' },
+  { externalId: '4346', name: 'American Major League Soccer', type: 'league' as const, logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/spn8991535728519.png' },
+]
+
+const TOP_COUNTRIES = [
+  { externalId: 'England', name: 'England', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/gb-eng.png' },
+  { externalId: 'Spain', name: 'Spain', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/es.png' },
+  { externalId: 'Argentina', name: 'Argentina', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/ar.png' },
+  { externalId: 'Brazil', name: 'Brazil', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/br.png' },
+  { externalId: 'Germany', name: 'Germany', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/de.png' },
+  { externalId: 'France', name: 'France', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/fr.png' },
+  { externalId: 'Italy', name: 'Italy', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/it.png' },
+  { externalId: 'USA', name: 'USA', type: 'country' as const, logoUrl: 'https://flagcdn.com/w80/us.png' },
+]
+
+export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModalProps) {
+  const [mounted, setMounted] = useState(false)
+  const [activeTab, setActiveTab] = useState<'popular' | 'clubs' | 'leagues' | 'countries'>('popular')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [isSearching, startSearchTransition] = useTransition()
+  const [followedSet, setFollowedSet] = useState<Set<string>>(
+    new Set(initialFollows.map(f => `${f.type}:${f.externalId}`))
+  )
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!isOpen || !mounted) return null
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const q = e.target.value
+    setSearchQuery(q)
+    if (q.trim().length >= 2) {
+      startSearchTransition(async () => {
+        try {
+          const res = await searchTeamsAction(q)
+          setSearchResults(res || [])
+        } catch (err) {
+          console.error(err)
+        }
+      })
+    } else {
+      setSearchResults([])
+    }
+  }
+
+  const isItemFollowed = (externalId: string, type: string) => {
+    return followedSet.has(`${type}:${externalId}`)
+  }
+
+  const handleToggleState = (externalId: string, type: string, newState: boolean) => {
+    const key = `${type}:${externalId}`
+    setFollowedSet(prev => {
+      const next = new Set(prev)
+      if (newState) next.add(key)
+      else next.delete(key)
+      return next
+    })
+  }
+
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0, y: 10 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 10 }}
+        className="w-full max-w-3xl bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] relative z-50"
+      >
+        {/* Header */}
+        <div className="p-6 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/80">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 text-indigo-400">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-zinc-100">Personalize Your Feed</h2>
+              <p className="text-sm text-zinc-400">Follow your favorite clubs, competitions, and countries</p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex border-b border-zinc-800 px-6 bg-zinc-950/50 gap-2 overflow-x-auto shrink-0">
+          <button
+            onClick={() => { setActiveTab('popular'); setSearchQuery(''); }}
+            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'popular' 
+                ? 'border-indigo-500 text-indigo-400' 
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Featured</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('clubs')}
+            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'clubs' 
+                ? 'border-indigo-500 text-indigo-400' 
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Shield className="w-4 h-4" />
+            <span>Clubs & Teams</span>
+          </button>
+          <button
+            onClick={() => { setActiveTab('leagues'); setSearchQuery(''); }}
+            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'leagues' 
+                ? 'border-indigo-500 text-indigo-400' 
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Trophy className="w-4 h-4" />
+            <span>Leagues</span>
+          </button>
+          <button
+            onClick={() => { setActiveTab('countries'); setSearchQuery(''); }}
+            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'countries' 
+                ? 'border-indigo-500 text-indigo-400' 
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Globe className="w-4 h-4" />
+            <span>Countries</span>
+          </button>
+        </div>
+
+        {/* Search Input for Clubs */}
+        {activeTab === 'clubs' && (
+          <div className="p-6 pb-2 shrink-0">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearch}
+                placeholder="Search any team worldwide (e.g. Arsenal, Dortmund, Milan)..."
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl py-3 pl-12 pr-10 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm"
+              />
+              {isSearching && (
+                <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-indigo-400" />
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Content Area */}
+        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+          {activeTab === 'popular' && (
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3 flex items-center gap-2">
+                  <Shield className="w-3.5 h-3.5 text-indigo-400" /> Popular Clubs
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {TOP_CLUBS.map(club => (
+                    <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                      <div className="flex items-center gap-3">
+                        <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                        <div>
+                          <div className="font-bold text-sm text-zinc-200">{club.name}</div>
+                          <div className="text-xs text-zinc-500">{club.country}</div>
+                        </div>
+                      </div>
+                      <FollowButton 
+                        externalId={club.externalId} 
+                        name={club.name} 
+                        type={club.type} 
+                        logoUrl={club.logoUrl}
+                        initialIsFollowing={isItemFollowed(club.externalId, club.type)}
+                        onToggle={(state) => handleToggleState(club.externalId, club.type, state)}
+                        size="sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3 flex items-center gap-2">
+                  <Trophy className="w-3.5 h-3.5 text-indigo-400" /> Top Competitions
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {TOP_LEAGUES.map(league => (
+                    <div key={league.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                      <div className="flex items-center gap-3">
+                        <TeamLogo src={league.logoUrl} name={league.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                        <div className="font-bold text-sm text-zinc-200">{league.name}</div>
+                      </div>
+                      <FollowButton 
+                        externalId={league.externalId} 
+                        name={league.name} 
+                        type={league.type} 
+                        logoUrl={league.logoUrl}
+                        initialIsFollowing={isItemFollowed(league.externalId, league.type)}
+                        onToggle={(state) => handleToggleState(league.externalId, league.type, state)}
+                        size="sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3 flex items-center gap-2">
+                  <Globe className="w-3.5 h-3.5 text-indigo-400" /> Footballing Nations
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {TOP_COUNTRIES.map(country => (
+                    <div key={country.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                      <div className="flex items-center gap-3">
+                        <TeamLogo src={country.logoUrl} name={country.name} className="w-7 h-5 object-cover rounded shadow-sm" fallbackClassName="w-7 h-5 text-xs rounded" />
+                        <div className="font-bold text-sm text-zinc-200">{country.name}</div>
+                      </div>
+                      <FollowButton 
+                        externalId={country.externalId} 
+                        name={country.name} 
+                        type={country.type} 
+                        logoUrl={country.logoUrl}
+                        initialIsFollowing={isItemFollowed(country.externalId, country.type)}
+                        onToggle={(state) => handleToggleState(country.externalId, country.type, state)}
+                        size="sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'clubs' && (
+            <div>
+              {searchQuery.trim().length === 0 ? (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">Popular Suggestions</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {TOP_CLUBS.map(club => (
+                      <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                        <div className="flex items-center gap-3">
+                          <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                          <div>
+                            <div className="font-bold text-sm text-zinc-200">{club.name}</div>
+                            <div className="text-xs text-zinc-500">{club.country}</div>
+                          </div>
+                        </div>
+                        <FollowButton 
+                          externalId={club.externalId} 
+                          name={club.name} 
+                          type={club.type} 
+                          logoUrl={club.logoUrl}
+                          initialIsFollowing={isItemFollowed(club.externalId, club.type)}
+                          onToggle={(state) => handleToggleState(club.externalId, club.type, state)}
+                          size="sm"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : searchResults.length === 0 && !isSearching ? (
+                <div className="text-center py-12 text-zinc-500">
+                  No clubs found matching "<span className="text-zinc-300 font-semibold">{searchQuery}</span>"
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {searchResults.map(club => (
+                    <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                      <div className="flex items-center gap-3">
+                        <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                        <div>
+                          <div className="font-bold text-sm text-zinc-200">{club.name}</div>
+                          {club.country && <div className="text-xs text-zinc-500">{club.country}</div>}
+                        </div>
+                      </div>
+                      <FollowButton 
+                        externalId={club.externalId} 
+                        name={club.name} 
+                        type="club" 
+                        logoUrl={club.logoUrl}
+                        initialIsFollowing={isItemFollowed(club.externalId, 'club')}
+                        onToggle={(state) => handleToggleState(club.externalId, 'club', state)}
+                        size="sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'leagues' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {TOP_LEAGUES.map(league => (
+                <div key={league.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                  <div className="flex items-center gap-3">
+                    <TeamLogo src={league.logoUrl} name={league.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                    <div className="font-bold text-sm text-zinc-200">{league.name}</div>
+                  </div>
+                  <FollowButton 
+                    externalId={league.externalId} 
+                    name={league.name} 
+                    type={league.type} 
+                    logoUrl={league.logoUrl}
+                    initialIsFollowing={isItemFollowed(league.externalId, league.type)}
+                    onToggle={(state) => handleToggleState(league.externalId, league.type, state)}
+                    size="sm"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'countries' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {TOP_COUNTRIES.map(country => (
+                <div key={country.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                  <div className="flex items-center gap-3">
+                    <TeamLogo src={country.logoUrl} name={country.name} className="w-7 h-5 object-cover rounded shadow-sm" fallbackClassName="w-7 h-5 text-xs rounded" />
+                    <div className="font-bold text-sm text-zinc-200">{country.name}</div>
+                  </div>
+                  <FollowButton 
+                    externalId={country.externalId} 
+                    name={country.name} 
+                    type={country.type} 
+                    logoUrl={country.logoUrl}
+                    initialIsFollowing={isItemFollowed(country.externalId, country.type)}
+                    onToggle={(state) => handleToggleState(country.externalId, country.type, state)}
+                    size="sm"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between px-6 shrink-0">
+          <div className="text-xs text-zinc-400 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Following <strong className="text-zinc-200 font-bold">{followedSet.size}</strong> entities</span>
+          </div>
+          <button
+            onClick={onClose}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm py-2 px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/20 cursor-pointer"
+          >
+            Done
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  )
+
+  return createPortal(modalContent, document.body)
+}
