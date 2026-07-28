@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface TeamLogoProps {
   src?: string | null;
@@ -10,13 +10,9 @@ interface TeamLogoProps {
 }
 
 export function TeamLogo({ src, name, className = 'w-7 h-7 object-contain', fallbackClassName = 'w-7 h-7 text-xs' }: TeamLogoProps) {
-  const [hasError, setHasError] = useState(false)
+  const [failedSrc, setFailedSrc] = useState<string | null>(null)
 
-  useEffect(() => {
-    setHasError(false)
-  }, [src])
-
-  if (!src || hasError) {
+  if (!src || failedSrc === src) {
     const initials = (name || '?')
       .split(' ')
       .map(word => word[0])
@@ -26,7 +22,7 @@ export function TeamLogo({ src, name, className = 'w-7 h-7 object-contain', fall
 
     return (
       <div 
-        className={`bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/80 rounded-full flex items-center justify-center font-bold font-mono text-zinc-300 shadow-inner shrink-0 ${fallbackClassName}`}
+        className={`bg-[#fde047] border-2 border-black rounded-full flex items-center justify-center font-black font-mono text-black shadow-[1px_1px_0px_0px_#000] shrink-0 ${fallbackClassName}`}
         title={name}
       >
         {initials || '⚽'}
@@ -39,7 +35,7 @@ export function TeamLogo({ src, name, className = 'w-7 h-7 object-contain', fall
       src={src}
       alt={name}
       className={`${className} shrink-0`}
-      onError={() => setHasError(true)}
+      onError={() => setFailedSrc(src)}
     />
   )
 }

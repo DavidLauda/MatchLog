@@ -47,10 +47,10 @@ export function DeleteListButton({
       <button
         onClick={handleDelete}
         disabled={isPending}
-        className="p-2 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+        className="p-2 text-red-600 hover:bg-red-100 rounded-xl border-2 border-transparent hover:border-black transition-all cursor-pointer disabled:opacity-50"
         title="Delete list"
       >
-        <Trash2 className="w-4 h-4" />
+        <Trash2 className="w-4 h-4 stroke-[2.5]" />
       </button>
     )
   }
@@ -59,9 +59,9 @@ export function DeleteListButton({
     <button
       onClick={handleDelete}
       disabled={isPending}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-sm font-semibold transition-all cursor-pointer shadow-sm hover:shadow-rose-500/10 disabled:opacity-50 shrink-0"
+      className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#fda4af] hover:bg-[#fb7185] text-black border-2 border-black text-sm font-black transition-all cursor-pointer shadow-[3px_3px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-50 shrink-0"
     >
-      <Trash2 className="w-4 h-4" />
+      <Trash2 className="w-4 h-4 stroke-[2.5]" />
       {isPending ? 'Deleting...' : 'Delete List'}
     </button>
   )

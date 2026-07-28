@@ -98,110 +98,110 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
         initial={{ scale: 0.95, opacity: 0, y: 10 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 10 }}
-        className="w-full max-w-3xl bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] relative z-50"
+        className="w-full max-w-3xl bg-[#fef9c3] border-[3px] border-black rounded-3xl shadow-[8px_8px_0px_0px_#000] overflow-hidden flex flex-col max-h-[85vh] relative z-50"
       >
         {/* Header */}
-        <div className="p-6 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/80">
+        <div className="p-6 border-b-2 border-black flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 text-indigo-400">
-              <Sparkles className="w-6 h-6" />
+            <div className="p-2.5 bg-[#fde047] rounded-2xl border-2 border-black text-black shadow-[2px_2px_0px_0px_#000]">
+              <Sparkles className="w-6 h-6 stroke-[2.5]" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-zinc-100">Personalize Your Feed</h2>
-              <p className="text-sm text-zinc-400">Follow your favorite clubs, competitions, and countries</p>
+              <h2 className="text-xl font-black text-black">Personalize Your Feed</h2>
+              <p className="text-xs font-bold text-zinc-600">Follow your favorite clubs, competitions, and countries</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+            className="p-1.5 text-black hover:bg-zinc-100 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 stroke-[2.5]" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-zinc-800 px-6 bg-zinc-950/50 gap-2 overflow-x-auto shrink-0">
+        <div className="flex border-b-2 border-black px-6 bg-[#fef9c3] gap-2 overflow-x-auto shrink-0 pt-2">
           <button
             onClick={() => { setActiveTab('popular'); setSearchQuery(''); }}
-            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+            className={`py-3 px-4 font-black text-sm border-2 border-black rounded-t-2xl transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'popular' 
-                ? 'border-indigo-500 text-indigo-400' 
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                ? 'bg-white text-black shadow-[2px_0px_0px_0px_#000] border-b-white translate-y-[2px]' 
+                : 'bg-[#fde047] text-black hover:bg-[#facc15]'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 stroke-[2.5]" />
             <span>Featured</span>
           </button>
           <button
             onClick={() => setActiveTab('clubs')}
-            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+            className={`py-3 px-4 font-black text-sm border-2 border-black rounded-t-2xl transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'clubs' 
-                ? 'border-indigo-500 text-indigo-400' 
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                ? 'bg-white text-black shadow-[2px_0px_0px_0px_#000] border-b-white translate-y-[2px]' 
+                : 'bg-[#fde047] text-black hover:bg-[#facc15]'
             }`}
           >
-            <Shield className="w-4 h-4" />
+            <Shield className="w-4 h-4 stroke-[2.5]" />
             <span>Clubs & Teams</span>
           </button>
           <button
             onClick={() => { setActiveTab('leagues'); setSearchQuery(''); }}
-            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+            className={`py-3 px-4 font-black text-sm border-2 border-black rounded-t-2xl transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'leagues' 
-                ? 'border-indigo-500 text-indigo-400' 
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                ? 'bg-white text-black shadow-[2px_0px_0px_0px_#000] border-b-white translate-y-[2px]' 
+                : 'bg-[#fde047] text-black hover:bg-[#facc15]'
             }`}
           >
-            <Trophy className="w-4 h-4" />
+            <Trophy className="w-4 h-4 stroke-[2.5]" />
             <span>Leagues</span>
           </button>
           <button
             onClick={() => { setActiveTab('countries'); setSearchQuery(''); }}
-            className={`py-3.5 px-4 font-semibold text-sm border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+            className={`py-3 px-4 font-black text-sm border-2 border-black rounded-t-2xl transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'countries' 
-                ? 'border-indigo-500 text-indigo-400' 
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                ? 'bg-white text-black shadow-[2px_0px_0px_0px_#000] border-b-white translate-y-[2px]' 
+                : 'bg-[#fde047] text-black hover:bg-[#facc15]'
             }`}
           >
-            <Globe className="w-4 h-4" />
+            <Globe className="w-4 h-4 stroke-[2.5]" />
             <span>Countries</span>
           </button>
         </div>
 
         {/* Search Input for Clubs */}
         {activeTab === 'clubs' && (
-          <div className="p-6 pb-2 shrink-0">
+          <div className="p-6 pb-2 shrink-0 bg-white">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black stroke-[2.5]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleSearch}
                 placeholder="Search any team worldwide (e.g. Arsenal, Dortmund, Milan)..."
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl py-3 pl-12 pr-10 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm"
+                className="w-full bg-white border-2 border-black rounded-2xl py-3 pl-12 pr-10 text-black font-bold placeholder-zinc-400 focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] shadow-[3px_3px_0px_0px_#000] text-sm"
               />
               {isSearching && (
-                <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-indigo-400" />
+                <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-black" />
               )}
             </div>
           </div>
         )}
 
         {/* Content Area */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-white">
           {activeTab === 'popular' && (
             <div className="space-y-8">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3 flex items-center gap-2">
-                  <Shield className="w-3.5 h-3.5 text-indigo-400" /> Popular Clubs
+                <h3 className="text-xs font-black uppercase tracking-wider text-zinc-600 mb-3 flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-black stroke-[2.5]" /> Popular Clubs
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {TOP_CLUBS.map(club => (
-                    <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                    <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                       <div className="flex items-center gap-3">
-                        <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                        <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm font-black" />
                         <div>
-                          <div className="font-bold text-sm text-zinc-200">{club.name}</div>
-                          <div className="text-xs text-zinc-500">{club.country}</div>
+                          <div className="font-black text-sm text-black">{club.name}</div>
+                          <div className="text-xs font-bold text-zinc-600">{club.country}</div>
                         </div>
                       </div>
                       <FollowButton 
@@ -212,6 +212,7 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                         initialIsFollowing={isItemFollowed(club.externalId, club.type)}
                         onToggle={(state) => handleToggleState(club.externalId, club.type, state)}
                         size="sm"
+                        variant="pill"
                       />
                     </div>
                   ))}
@@ -219,15 +220,15 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
               </div>
 
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3 flex items-center gap-2">
-                  <Trophy className="w-3.5 h-3.5 text-indigo-400" /> Top Competitions
+                <h3 className="text-xs font-black uppercase tracking-wider text-zinc-600 mb-3 flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-black stroke-[2.5]" /> Top Competitions
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {TOP_LEAGUES.map(league => (
-                    <div key={league.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                    <div key={league.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                       <div className="flex items-center gap-3">
-                        <TeamLogo src={league.logoUrl} name={league.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
-                        <div className="font-bold text-sm text-zinc-200">{league.name}</div>
+                        <TeamLogo src={league.logoUrl} name={league.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm font-black" />
+                        <div className="font-black text-sm text-black">{league.name}</div>
                       </div>
                       <FollowButton 
                         externalId={league.externalId} 
@@ -237,6 +238,7 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                         initialIsFollowing={isItemFollowed(league.externalId, league.type)}
                         onToggle={(state) => handleToggleState(league.externalId, league.type, state)}
                         size="sm"
+                        variant="pill"
                       />
                     </div>
                   ))}
@@ -244,15 +246,15 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
               </div>
 
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3 flex items-center gap-2">
-                  <Globe className="w-3.5 h-3.5 text-indigo-400" /> Footballing Nations
+                <h3 className="text-xs font-black uppercase tracking-wider text-zinc-600 mb-3 flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-black stroke-[2.5]" /> Footballing Nations
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {TOP_COUNTRIES.map(country => (
-                    <div key={country.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                    <div key={country.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                       <div className="flex items-center gap-3">
-                        <TeamLogo src={country.logoUrl} name={country.name} className="w-7 h-5 object-cover rounded shadow-sm" fallbackClassName="w-7 h-5 text-xs rounded" />
-                        <div className="font-bold text-sm text-zinc-200">{country.name}</div>
+                        <TeamLogo src={country.logoUrl} name={country.name} className="w-7 h-5 object-cover rounded border border-black shadow-sm" fallbackClassName="w-7 h-5 text-xs rounded font-black" />
+                        <div className="font-black text-sm text-black">{country.name}</div>
                       </div>
                       <FollowButton 
                         externalId={country.externalId} 
@@ -262,6 +264,7 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                         initialIsFollowing={isItemFollowed(country.externalId, country.type)}
                         onToggle={(state) => handleToggleState(country.externalId, country.type, state)}
                         size="sm"
+                        variant="pill"
                       />
                     </div>
                   ))}
@@ -274,15 +277,15 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
             <div>
               {searchQuery.trim().length === 0 ? (
                 <div className="space-y-3">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">Popular Suggestions</h3>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-zinc-600 mb-3">Popular Suggestions</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {TOP_CLUBS.map(club => (
-                      <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                      <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                         <div className="flex items-center gap-3">
-                          <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                          <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm font-black" />
                           <div>
-                            <div className="font-bold text-sm text-zinc-200">{club.name}</div>
-                            <div className="text-xs text-zinc-500">{club.country}</div>
+                            <div className="font-black text-sm text-black">{club.name}</div>
+                            <div className="text-xs font-bold text-zinc-600">{club.country}</div>
                           </div>
                         </div>
                         <FollowButton 
@@ -293,24 +296,25 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                           initialIsFollowing={isItemFollowed(club.externalId, club.type)}
                           onToggle={(state) => handleToggleState(club.externalId, club.type, state)}
                           size="sm"
+                          variant="pill"
                         />
                       </div>
                     ))}
                   </div>
                 </div>
               ) : searchResults.length === 0 && !isSearching ? (
-                <div className="text-center py-12 text-zinc-500">
-                  No clubs found matching "<span className="text-zinc-300 font-semibold">{searchQuery}</span>"
+                <div className="text-center py-12 font-bold text-zinc-500">
+                  No clubs found matching "<span className="text-black font-black">{searchQuery}</span>"
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {searchResults.map(club => (
-                    <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                    <div key={club.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                       <div className="flex items-center gap-3">
-                        <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
+                        <TeamLogo src={club.logoUrl} name={club.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm font-black" />
                         <div>
-                          <div className="font-bold text-sm text-zinc-200">{club.name}</div>
-                          {club.country && <div className="text-xs text-zinc-500">{club.country}</div>}
+                          <div className="font-black text-sm text-black">{club.name}</div>
+                          {club.country && <div className="text-xs font-bold text-zinc-600">{club.country}</div>}
                         </div>
                       </div>
                       <FollowButton 
@@ -321,6 +325,7 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                         initialIsFollowing={isItemFollowed(club.externalId, 'club')}
                         onToggle={(state) => handleToggleState(club.externalId, 'club', state)}
                         size="sm"
+                        variant="pill"
                       />
                     </div>
                   ))}
@@ -332,10 +337,10 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
           {activeTab === 'leagues' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {TOP_LEAGUES.map(league => (
-                <div key={league.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                <div key={league.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                   <div className="flex items-center gap-3">
-                    <TeamLogo src={league.logoUrl} name={league.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm" />
-                    <div className="font-bold text-sm text-zinc-200">{league.name}</div>
+                    <TeamLogo src={league.logoUrl} name={league.name} className="w-9 h-9 object-contain" fallbackClassName="w-9 h-9 text-sm font-black" />
+                    <div className="font-black text-sm text-black">{league.name}</div>
                   </div>
                   <FollowButton 
                     externalId={league.externalId} 
@@ -345,6 +350,7 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                     initialIsFollowing={isItemFollowed(league.externalId, league.type)}
                     onToggle={(state) => handleToggleState(league.externalId, league.type, state)}
                     size="sm"
+                    variant="pill"
                   />
                 </div>
               ))}
@@ -354,10 +360,10 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
           {activeTab === 'countries' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {TOP_COUNTRIES.map(country => (
-                <div key={country.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-zinc-700 transition-all">
+                <div key={country.externalId} className="flex items-center justify-between p-3.5 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
                   <div className="flex items-center gap-3">
-                    <TeamLogo src={country.logoUrl} name={country.name} className="w-7 h-5 object-cover rounded shadow-sm" fallbackClassName="w-7 h-5 text-xs rounded" />
-                    <div className="font-bold text-sm text-zinc-200">{country.name}</div>
+                    <TeamLogo src={country.logoUrl} name={country.name} className="w-7 h-5 object-cover rounded border border-black shadow-sm" fallbackClassName="w-7 h-5 text-xs rounded font-black" />
+                    <div className="font-black text-sm text-black">{country.name}</div>
                   </div>
                   <FollowButton 
                     externalId={country.externalId} 
@@ -367,6 +373,7 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
                     initialIsFollowing={isItemFollowed(country.externalId, country.type)}
                     onToggle={(state) => handleToggleState(country.externalId, country.type, state)}
                     size="sm"
+                    variant="pill"
                   />
                 </div>
               ))}
@@ -375,14 +382,14 @@ export function FollowModal({ isOpen, onClose, initialFollows = [] }: FollowModa
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between px-6 shrink-0">
-          <div className="text-xs text-zinc-400 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span>Following <strong className="text-zinc-200 font-bold">{followedSet.size}</strong> entities</span>
+        <div className="p-4 border-t-2 border-black bg-[#fef9c3] flex items-center justify-between px-6 shrink-0">
+          <div className="text-xs font-black text-black flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+            <span>Following <strong className="text-black font-black bg-white px-2 py-0.5 rounded-md border border-black shadow-[1px_1px_0px_0px_#000]">{followedSet.size}</strong> entities</span>
           </div>
           <button
             onClick={onClose}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm py-2 px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/20 cursor-pointer"
+            className="retro-btn-primary py-2 px-6 text-sm"
           >
             Done
           </button>

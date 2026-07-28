@@ -50,13 +50,13 @@ export function TagSelector({ initialTags = [] }: TagSelectorProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <label htmlFor="tags" className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-          <Tag className="w-3.5 h-3.5 text-indigo-400" />
+        <label htmlFor="tags" className="text-sm font-black text-black flex items-center gap-1.5">
+          <Tag className="w-4 h-4 text-black stroke-[2.5]" />
           <span>Tags</span>
-          <span className="text-xs text-slate-500 font-normal">(click to add or type below)</span>
+          <span className="text-xs text-zinc-600 font-bold">(click to add or type below)</span>
         </label>
-        <span className="text-[11px] text-indigo-400 font-medium flex items-center gap-1 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20">
-          <Sparkles className="w-3 h-3" /> Popular
+        <span className="text-[11px] text-black font-black flex items-center gap-1 bg-[#fde047] px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000]">
+          <Sparkles className="w-3 h-3 stroke-[2.5]" /> Popular
         </span>
       </div>
 
@@ -68,10 +68,10 @@ export function TagSelector({ initialTags = [] }: TagSelectorProps) {
               key={tag}
               type="button"
               onClick={() => toggleTag(tag)}
-              className={`text-xs font-semibold px-2.5 py-1.5 rounded-xl transition-all duration-150 flex items-center gap-1 cursor-pointer select-none ${
+              className={`text-xs font-black px-3 py-1.5 rounded-xl transition-all duration-150 flex items-center gap-1 cursor-pointer select-none border-2 border-black ${
                 isSelected
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/50 scale-[1.03]'
-                  : 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/80 hover:border-slate-600'
+                  ? 'bg-[#fde047] text-black shadow-[2px_2px_0px_0px_#000] translate-x-[-1px] translate-y-[-1px]'
+                  : 'bg-white hover:bg-zinc-100 text-zinc-800 shadow-[2px_2px_0px_0px_#000]'
               }`}
             >
               <span>#{tag}</span>
@@ -88,7 +88,7 @@ export function TagSelector({ initialTags = [] }: TagSelectorProps) {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="e.g. thriller, comeback, controversial"
-          className="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all text-sm"
+          className="w-full bg-white border-2 border-black rounded-2xl p-3 text-black font-bold placeholder-zinc-400 shadow-[3px_3px_0px_0px_#000] focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_#000] transition-all text-sm"
         />
       </div>
     </div>

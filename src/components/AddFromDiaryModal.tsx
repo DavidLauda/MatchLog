@@ -86,9 +86,9 @@ export function AddFromDiaryModal({
       return (
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-          className="btn-primary inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20 cursor-pointer text-base"
+          className="retro-btn-primary inline-flex items-center gap-2 font-black px-6 py-3 text-base"
         >
-          <BookOpen className="w-5 h-5" />
+          <BookOpen className="w-5 h-5 stroke-[2.5]" />
           Add Matches from My Diary
         </button>
       )
@@ -98,9 +98,9 @@ export function AddFromDiaryModal({
       return (
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 text-xs font-semibold transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#fde047] hover:bg-[#facc15] text-black border-2 border-black text-xs font-black transition-all cursor-pointer shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px]"
         >
-          <Plus className="w-3.5 h-3.5" /> Add from Diary
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" /> Add from Diary
         </button>
       )
     }
@@ -108,9 +108,9 @@ export function AddFromDiaryModal({
     return (
       <button
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-all cursor-pointer shadow-sm hover:shadow-indigo-500/20 shrink-0"
+        className="retro-btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm shrink-0"
       >
-        <BookOpen className="w-4 h-4" />
+        <BookOpen className="w-4 h-4 stroke-[2.5]" />
         Add from Diary
       </button>
     )
@@ -119,46 +119,46 @@ export function AddFromDiaryModal({
   const modalContent = isOpen ? (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setIsOpen(false)}>
       <div 
-        className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="bg-[#fef9c3] border-[3px] border-black rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-[8px_8px_0px_0px_#000] overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-zinc-800/80 flex items-center justify-between gap-4 bg-zinc-950/50">
+        <div className="p-6 border-b-2 border-black flex items-center justify-between gap-4 bg-white">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-indigo-400" />
-              Add to "{listTitle}"
+            <h3 className="text-xl font-black text-black flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-black stroke-[2.5]" />
+              Add to &ldquo;{listTitle}&rdquo;
             </h3>
-            <p className="text-xs text-zinc-400 mt-1">
+            <p className="text-xs font-bold text-zinc-600 mt-1">
               Select matches from your diary to add or remove from this list.
             </p>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+            className="p-1.5 text-black hover:bg-zinc-100 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 stroke-[2.5]" />
           </button>
         </div>
 
         {/* Search */}
-        <div className="p-4 border-b border-zinc-800/80 bg-zinc-900/50">
+        <div className="p-4 border-b-2 border-black bg-[#fef9c3]">
           <div className="relative">
-            <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-black stroke-[2.5] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Filter diary matches by team or competition..."
-              className="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+              className="w-full bg-white border-2 border-black rounded-2xl pl-10 pr-4 py-2.5 text-sm text-black font-bold placeholder-zinc-400 focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] shadow-[2px_2px_0px_0px_#000] transition-all"
             />
           </div>
         </div>
 
         {/* List of Diary Matches */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-zinc-800/40">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-white">
           {filteredMatches.length === 0 ? (
-            <div className="py-12 text-center text-zinc-500 text-sm">
+            <div className="py-12 text-center text-zinc-500 font-bold text-sm">
               {diaryMatches.length === 0 
                 ? "You haven't logged any matches in your diary yet."
                 : "No matches found matching your search."}
@@ -169,30 +169,30 @@ export function AddFromDiaryModal({
               const isPending = pendingIds[match.id]
 
               return (
-                <div key={match.id} className="pt-3 first:pt-0 flex items-center justify-between gap-4 group">
+                <div key={match.id} className="p-3 bg-white border-2 border-black rounded-2xl shadow-[2px_2px_0px_0px_#000] flex items-center justify-between gap-4 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all group">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 mb-1">
-                      <span className="text-amber-400/90 font-medium flex items-center gap-1">
-                        <Trophy className="w-3 h-3" /> {match.competition}
+                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-600 mb-1">
+                      <span className="text-black font-black flex items-center gap-1 bg-[#fef9c3] px-2 py-0.5 rounded-md border border-black shadow-[1px_1px_0px_0px_#000]">
+                        <Trophy className="w-3 h-3 stroke-[2.5]" /> {match.competition}
                       </span>
                       <span>•</span>
-                      <span className="font-mono">
+                      <span className="font-mono font-black text-black">
                         <FormattedDate date={match.matchDate} fallbackFormat="short" />
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3 text-sm">
-                      <div className="flex items-center gap-2 font-semibold text-zinc-200 truncate">
-                        <TeamLogo src={match.homeTeam.logoUrl} name={match.homeTeam.name} className="w-5 h-5 object-contain" fallbackClassName="w-5 h-5 text-[10px]" />
+                    <div className="flex items-center gap-3 text-sm pt-1">
+                      <div className="flex items-center gap-2 font-black text-black truncate">
+                        <TeamLogo src={match.homeTeam.logoUrl} name={match.homeTeam.name} className="w-6 h-6 object-contain" fallbackClassName="w-6 h-6 text-[10px] font-black" />
                         <span className="truncate">{match.homeTeam.name}</span>
                       </div>
                       
-                      <div className="font-mono font-bold bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800 text-xs text-zinc-300 shrink-0">
+                      <div className="font-mono font-black bg-[#18181b] px-2.5 py-0.5 rounded-lg border-2 border-black text-xs text-white shrink-0 shadow-[1px_1px_0px_0px_#000]">
                         {match.homeScore ?? '-'} : {match.awayScore ?? '-'}
                       </div>
 
-                      <div className="flex items-center gap-2 font-semibold text-zinc-200 truncate">
-                        <TeamLogo src={match.awayTeam.logoUrl} name={match.awayTeam.name} className="w-5 h-5 object-contain" fallbackClassName="w-5 h-5 text-[10px]" />
+                      <div className="flex items-center gap-2 font-black text-black truncate">
+                        <TeamLogo src={match.awayTeam.logoUrl} name={match.awayTeam.name} className="w-6 h-6 object-contain" fallbackClassName="w-6 h-6 text-[10px] font-black" />
                         <span className="truncate">{match.awayTeam.name}</span>
                       </div>
                     </div>
@@ -201,24 +201,24 @@ export function AddFromDiaryModal({
                   <button
                     onClick={() => handleToggle(match.id)}
                     disabled={isPending}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                    className={`px-3.5 py-2 rounded-2xl text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] ${
                       isAdded
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 group/btn'
-                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm hover:shadow-indigo-500/20'
+                        ? 'bg-[#fda4af] hover:bg-[#fb7185] text-black group/btn'
+                        : 'bg-[#a3e635] hover:bg-[#84cc16] text-black'
                     } disabled:opacity-50`}
                   >
                     {isPending ? (
                       '...'
                     ) : isAdded ? (
                       <>
-                        <Check className="w-3.5 h-3.5 group-hover/btn:hidden" />
-                        <X className="w-3.5 h-3.5 hidden group-hover/btn:inline" />
+                        <Check className="w-3.5 h-3.5 stroke-[2.5] group-hover/btn:hidden" />
+                        <X className="w-3.5 h-3.5 stroke-[2.5] hidden group-hover/btn:inline" />
                         <span className="group-hover/btn:hidden">Added</span>
                         <span className="hidden group-hover/btn:inline">Remove</span>
                       </>
                     ) : (
                       <>
-                        <Plus className="w-3.5 h-3.5" />
+                        <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                         Add
                       </>
                     )}
@@ -230,11 +230,11 @@ export function AddFromDiaryModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-zinc-800/80 bg-zinc-950/50 flex items-center justify-between text-xs text-zinc-400">
-          <span>{addedIds.length} match{addedIds.length !== 1 ? 'es' : ''} in list</span>
+        <div className="p-4 border-t-2 border-black bg-[#fef9c3] flex items-center justify-between text-xs font-black text-black">
+          <span className="bg-white px-3 py-1 rounded-xl border border-black shadow-[1px_1px_0px_0px_#000]">{addedIds.length} match{addedIds.length !== 1 ? 'es' : ''} in list</span>
           <button
             onClick={() => setIsOpen(false)}
-            className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold transition-colors cursor-pointer"
+            className="retro-btn-primary py-2 px-6"
           >
             Done
           </button>

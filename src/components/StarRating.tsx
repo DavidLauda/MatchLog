@@ -19,10 +19,10 @@ export function StarRating({ initialRating = 0 }: { initialRating?: number }) {
           className="focus:outline-none transition-transform hover:scale-110"
         >
           <Star
-            className={`w-8 h-8 transition-colors ${
+            className={`w-9 h-9 transition-all stroke-[2.5] ${
               star <= (hover || rating)
-                ? 'fill-indigo-500 text-indigo-500 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]'
-                : 'text-slate-700'
+                ? 'fill-amber-400 text-black drop-shadow-[3px_3px_0px_#000] scale-110'
+                : 'fill-white text-black drop-shadow-[2px_2px_0px_#000] hover:fill-amber-200'
             }`}
           />
         </button>

@@ -15,10 +15,10 @@ export function NavFollowHub({ initialFollows }: NavFollowHubProps) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+        className="flex items-center gap-1.5 text-sm font-black text-black hover:bg-[#fde047] bg-white border-2 border-black px-3.5 py-1.5 rounded-2xl shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition-all cursor-pointer"
         title="Manage Followed Clubs, Leagues, and Countries"
       >
-        <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
+        <Sparkles className="w-4 h-4 text-black stroke-[2.5]" />
         <span>Follows</span>
       </button>
 
