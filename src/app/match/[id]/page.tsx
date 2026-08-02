@@ -98,6 +98,8 @@ export default async function MatchPage({
   const match = await prisma.match.findUnique({
     where: { externalId: id },
     include: { 
+      homeTeam: true,
+      awayTeam: true,
       ratings: {
         include: { user: true },
         orderBy: { watchedAt: 'desc' }
@@ -108,13 +110,57 @@ export default async function MatchPage({
   const user = await prisma.user.findFirst()
   const lists = user ? await prisma.matchList.findMany({ where: { userId: user.id } }) : []
 
-  const [details, stats, lineups, isHomeFollowed, isAwayFollowed] = await Promise.all([
+  let [details, stats, lineups, isHomeFollowed, isAwayFollowed] = await Promise.all([
     getFixtureDetails(id),
     getEventStats(id),
     getLineups(id),
     getFixtureDetails(id).then(d => d ? checkIsFollowing(d.teams.home.id, 'club') : false),
     getFixtureDetails(id).then(d => d ? checkIsFollowing(d.teams.away.id, 'club') : false)
   ])
+
+  // If match exists in DB, check if API data matches or is missing. If mismatch/missing, use local DB data (legacy match fallback).
+  if (match) {
+    if (!details || (details.teams.home.name !== match.homeTeam.name && details.teams.away.name !== match.awayTeam.name)) {
+      details = {
+        fixture: {
+          id: match.externalId,
+          date: match.matchDate.toISOString(),
+          status: { short: 'FT' },
+          venue: { name: 'Unknown Venue', city: '' },
+          referee: 'Unknown'
+        },
+        league: {
+          name: match.competition || 'Unknown',
+          season: ''
+        },
+        teams: {
+          home: {
+            id: match.homeTeamId,
+            name: match.homeTeam.name,
+            logo: match.homeTeam.logoUrl
+          },
+          away: {
+            id: match.awayTeamId,
+            name: match.awayTeam.name,
+            logo: match.awayTeam.logoUrl
+          }
+        },
+        goals: {
+          home: match.homeScore,
+          away: match.awayScore
+        }
+      }
+      stats = []
+      lineups = []
+      
+      const [homeF, awayF] = await Promise.all([
+        checkIsFollowing(match.homeTeamId, 'club'),
+        checkIsFollowing(match.awayTeamId, 'club')
+      ])
+      isHomeFollowed = homeF
+      isAwayFollowed = awayF
+    }
+  }
   
   if (!details) {
     return (
@@ -395,16 +441,23 @@ export default async function MatchPage({
                   </div>
 
                   <div className="flex items-center gap-1 bg-[#fef9c3] px-3 py-1.5 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_#000]">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-4 h-4 ${
-                          star <= rev.stars
-                            ? 'fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000]'
-                            : 'fill-zinc-200 text-zinc-300'
-                        }`}
-                      />
-                    ))}
+                    {[1, 2, 3, 4, 5].map((star) => {
+                      const isFull = star <= rev.stars;
+                      const isHalf = !isFull && (star - 1 < rev.stars);
+                      return (
+                        <div key={star} className="relative w-4 h-4">
+                          <Star
+                            className={`w-4 h-4 absolute inset-0 stroke-[2] ${isFull || isHalf ? 'drop-shadow-[1px_1px_0px_#000]' : ''} ${isFull ? 'fill-amber-400 text-black' : 'fill-white text-black'}`}
+                          />
+                          {isHalf && (
+                            <Star
+                              className="w-4 h-4 absolute inset-0 stroke-[2] fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000] z-10"
+                              style={{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)' }}
+                            />
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
 

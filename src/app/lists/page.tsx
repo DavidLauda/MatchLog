@@ -93,16 +93,18 @@ export default async function ListsPage() {
             key={list.id} 
             className="bg-white border-[2.5px] border-black rounded-3xl p-6 transition-all flex flex-col justify-between group shadow-[5px_5px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[7px_7px_0px_0px_#000] relative"
           >
-            <div>
+            <Link href={`/lists/${list.id}`} className="absolute inset-0 z-0" aria-label={`View list ${list.title}`} />
+            
+            <div className="relative z-10 pointer-events-none">
               <div className="flex items-start justify-between gap-2 mb-3">
-                <Link href={`/lists/${list.id}`} className="flex items-center gap-3 transition-colors flex-1 min-w-0">
+                <div className="flex items-center gap-3 transition-colors flex-1 min-w-0">
                   <div className="bg-[#f3e8ff] p-2.5 rounded-2xl border-2 border-black text-black shrink-0 shadow-[2px_2px_0px_0px_#000]">
                     <ListIcon className="w-5 h-5 stroke-[2.5]" />
                   </div>
                   <h3 className="text-xl font-black text-black truncate">{list.title}</h3>
-                </Link>
+                </div>
                 
-                <div className="flex items-center gap-1 shrink-0 z-10">
+                <div className="flex items-center gap-1 shrink-0 pointer-events-auto">
                   <DeleteListButton listId={list.id} listTitle={list.title} variant="icon" />
                 </div>
               </div>
@@ -111,12 +113,12 @@ export default async function ListsPage() {
               )}
             </div>
             
-            <div className="mt-6 pt-4 border-t-2 border-black flex items-center justify-between text-sm font-black gap-2">
+            <div className="mt-6 pt-4 border-t-2 border-black flex items-center justify-between text-sm font-black gap-2 relative z-10 pointer-events-none">
               <span className="bg-[#fef9c3] border-2 border-black text-black px-3 py-1 rounded-full text-xs font-black shrink-0 shadow-[1px_1px_0px_0px_#000]">
                 {list._count.items} match{list._count.items !== 1 ? 'es' : ''}
               </span>
 
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-3 shrink-0 pointer-events-auto">
                 <AddFromDiaryModal
                   listId={list.id}
                   listTitle={list.title}
@@ -124,9 +126,9 @@ export default async function ListsPage() {
                   existingMatchIds={list.items.map(i => i.matchId)}
                   triggerVariant="card-button"
                 />
-                <Link href={`/lists/${list.id}`} className="text-black flex items-center gap-1 text-xs font-black">
+                <div className="text-black flex items-center gap-1 text-xs font-black">
                   View <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-                </Link>
+                </div>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Trophy, Star, Hash, TrendingUp, ArrowRight, Sparkles, 
+  Trophy, Star, StarHalf, Hash, TrendingUp, ArrowRight, Sparkles, 
   Calendar, Clock, Flame, Shield, Globe, User, Edit3, 
   Share2, Check, Filter, Award, Zap, Bookmark, List as ListIcon,
   MessageSquare, Heart, CheckCircle2, X
@@ -73,10 +73,12 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
     return acc + home + away
   }, 0)
 
-  // Rating distribution (1 to 5 stars)
-  const starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } as Record<number, number>
+  // Rating distribution (0.5 to 5 stars)
+  const starCounts = { 5: 0, 4.5: 0, 4: 0, 3.5: 0, 3: 0, 2.5: 0, 2: 0, 1.5: 0, 1: 0, 0.5: 0 } as Record<number, number>
   ratings.forEach(r => {
-    const s = Math.min(Math.max(Math.round(r.stars), 1), 5)
+    let s = Math.round(r.stars * 2) / 2
+    if (s > 5) s = 5
+    if (s < 0.5) s = 0.5
     starCounts[s] = (starCounts[s] || 0) + 1
   })
 
@@ -378,22 +380,22 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
                   </span>
                 </div>
 
-                <div className="space-y-4 pt-1">
-                  {[5, 4, 3, 2, 1].map(star => {
+                <div className="space-y-2 pt-1">
+                  {[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5].map(star => {
                     const count = starCounts[star] || 0
                     const percentage = totalMatches > 0 ? Math.round((count / totalMatches) * 100) : 0
-                    const barColor = star === 5 ? 'bg-[#fde047]' :
-                                     star === 4 ? 'bg-[#a3e635]' :
-                                     star === 3 ? 'bg-[#f3e8ff]' :
-                                     star === 2 ? 'bg-[#dcfce7]' : 'bg-[#fda4af]'
+                    const barColor = star >= 4.5 ? 'bg-[#fde047]' :
+                                     star >= 3.5 ? 'bg-[#a3e635]' :
+                                     star >= 2.5 ? 'bg-[#f3e8ff]' :
+                                     star >= 1.5 ? 'bg-[#dcfce7]' : 'bg-[#fda4af]'
                     return (
                       <div key={star} className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 w-12 shrink-0 font-black text-sm text-black">
-                          <span>{star}</span>
-                          <Star className="w-4 h-4 fill-amber-400 text-black stroke-[2]" />
+                        <div className="flex items-center gap-1 w-10 shrink-0 font-black text-xs text-black">
+                          <span>{star.toFixed(1)}</span>
+                          <Star className="w-3.5 h-3.5 fill-amber-400 text-black stroke-[2]" />
                         </div>
 
-                        <div className="flex-1 bg-zinc-100 h-4 rounded-full overflow-hidden border-2 border-black p-0.5 shadow-inner">
+                        <div className="flex-1 bg-zinc-100 h-3 rounded-full overflow-hidden border-2 border-black p-[1px] shadow-inner">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${percentage}%` }}
@@ -402,7 +404,7 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
                           />
                         </div>
 
-                        <div className="w-20 text-right font-mono text-xs font-black text-black">
+                        <div className="w-20 text-right font-mono text-[11px] font-black text-black">
                           {count} <span className="text-zinc-600 font-bold">({percentage}%)</span>
                         </div>
                       </div>
@@ -533,9 +535,30 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
               <div className="flex gap-2 flex-wrap">
                 {[
                   { label: 'All Matches', value: 'all' },
-                  { label: '⭐⭐⭐⭐⭐ (5 Star)', value: 5 },
-                  { label: '⭐⭐⭐⭐ (4 Star)', value: 4 },
-                  { label: '⭐⭐⭐ (3 Star)', value: 3 },
+                  { label: (
+                    <span className="flex items-center gap-1.5">
+                      <div className="flex gap-0.5">
+                        {[1,2,3,4,5].map(i => <Star key={i} className="w-3 h-3 fill-amber-400 text-black stroke-[2] drop-shadow-[1px_1px_0px_#000]" />)}
+                      </div>
+                      (5 Star)
+                    </span>
+                  ), value: 5 },
+                  { label: (
+                    <span className="flex items-center gap-1.5">
+                      <div className="flex gap-0.5">
+                        {[1,2,3,4].map(i => <Star key={i} className="w-3 h-3 fill-amber-400 text-black stroke-[2] drop-shadow-[1px_1px_0px_#000]" />)}
+                      </div>
+                      (4 Star)
+                    </span>
+                  ), value: 4 },
+                  { label: (
+                    <span className="flex items-center gap-1.5">
+                      <div className="flex gap-0.5">
+                        {[1,2,3].map(i => <Star key={i} className="w-3 h-3 fill-amber-400 text-black stroke-[2] drop-shadow-[1px_1px_0px_#000]" />)}
+                      </div>
+                      (3 Star)
+                    </span>
+                  ), value: 3 },
                 ].map(item => (
                   <button
                     key={String(item.value)}
@@ -602,12 +625,23 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex gap-1 bg-white px-2.5 py-1 rounded-xl border border-black shadow-[1px_1px_0px_0px_#000]">
-                            {[1, 2, 3, 4, 5].map(star => (
-                              <Star
-                                key={star}
-                                className={`w-3.5 h-3.5 ${star <= rating.stars ? 'fill-amber-400 text-black stroke-[2]' : 'fill-zinc-200 text-zinc-300'}`}
-                              />
-                            ))}
+                            {[1, 2, 3, 4, 5].map(star => {
+                              const isFull = star <= rating.stars;
+                              const isHalf = !isFull && (star - 1 < rating.stars);
+                              return (
+                                <div key={star} className="relative w-3.5 h-3.5">
+                                  <Star
+                                    className={`w-3.5 h-3.5 absolute inset-0 stroke-[2] ${isFull || isHalf ? 'drop-shadow-[1px_1px_0px_#000]' : ''} ${isFull ? 'fill-amber-400 text-black' : 'fill-white text-black'}`}
+                                  />
+                                  {isHalf && (
+                                    <Star
+                                      className="w-3.5 h-3.5 absolute inset-0 stroke-[2] fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000] z-10"
+                                      style={{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)' }}
+                                    />
+                                  )}
+                                </div>
+                              )
+                            })}
                           </div>
                           <span className="text-xs font-black text-black bg-white px-2.5 py-1 rounded-xl border border-black shadow-[1px_1px_0px_0px_#000]">
                             <FormattedDate date={rating.watchedAt} options={{ month: 'short', day: 'numeric', year: 'numeric' }} />
@@ -675,7 +709,7 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
                     className="bg-white border-[2.5px] border-black rounded-2xl p-4 flex items-center justify-between gap-3 shadow-[3px_3px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#000] transition-all group"
                   >
                     <Link
-                      href={`/match/${entity.externalId}`}
+                      href={`/search?q=${encodeURIComponent(entity.name)}`}
                       className="flex items-center gap-3 flex-1 min-w-0"
                     >
                       <TeamLogo src={entity.logoUrl} name={entity.name} className="w-10 h-10 object-contain" fallbackClassName="w-10 h-10 text-xs font-black" />

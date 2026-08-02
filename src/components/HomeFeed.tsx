@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, Trophy, ArrowRight, Sparkles, Calendar, Clock, Flame, Shield } from 'lucide-react'
+import { 
+  Flame, Search, ArrowRight, TrendingUp, Calendar, Trophy, Globe, User, LogIn, Target, Shield, Heart,
+  Activity, Star, StarHalf, List, Clock, Zap, Sparkles
+} from 'lucide-react'
 import Link from 'next/link'
 import { FollowButton } from './FollowButton'
 import { TeamLogo } from './TeamLogo'
@@ -337,12 +340,23 @@ export function HomeFeed({ followedEntities, recentMatches, upcomingMatches, rat
                             {isLogged && userRating ? (
                               <div className="flex items-center gap-2">
                                 <div className="flex gap-0.5 bg-[#fef9c3] px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000]">
-                                  {[1, 2, 3, 4, 5].map((star) => (
-                                    <Star
-                                      key={star}
-                                      className={`w-3.5 h-3.5 stroke-[2] ${star <= userRating.stars ? 'fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000]' : 'fill-white text-black drop-shadow-[1px_1px_0px_#000]'}`}
-                                    />
-                                  ))}
+                                  {[1, 2, 3, 4, 5].map((star) => {
+                                    const isFull = star <= userRating.stars;
+                                    const isHalf = !isFull && (star - 1 < userRating.stars);
+                                    return (
+                                      <div key={star} className="relative w-3.5 h-3.5">
+                                        <Star
+                                          className={`w-3.5 h-3.5 absolute inset-0 stroke-[2] ${isFull || isHalf ? 'drop-shadow-[1px_1px_0px_#000]' : ''} ${isFull ? 'fill-amber-400 text-black' : 'fill-white text-black'}`}
+                                        />
+                                        {isHalf && (
+                                          <Star
+                                            className="w-3.5 h-3.5 absolute inset-0 stroke-[2] fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000] z-10"
+                                            style={{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)' }}
+                                          />
+                                        )}
+                                      </div>
+                                    )
+                                  })}
                                 </div>
                                 <span className="text-xs font-black bg-[#a3e635] text-black border border-black px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#000]">
                                   Logged
@@ -396,9 +410,7 @@ export function HomeFeed({ followedEntities, recentMatches, upcomingMatches, rat
                   <div className="p-5 flex flex-col gap-4 bg-white border-b-2 border-black">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="flex flex-col items-center justify-center w-8 h-8 rounded-full overflow-hidden shrink-0 border border-black shadow-sm">
-                          <TeamLogo src={rating.match.homeTeam.logoUrl} name={rating.match.homeTeam.name} className="w-full h-full object-contain" fallbackClassName="w-8 h-8 text-xs font-black" />
-                        </div>
+                        <TeamLogo src={rating.match.homeTeam.logoUrl} name={rating.match.homeTeam.name} className="w-8 h-8 object-contain" fallbackClassName="w-8 h-8 text-xs font-black" />
                         <span className="font-black text-base text-black line-clamp-1">{rating.match.homeTeam.name}</span>
                       </div>
                       <div className="font-mono text-xl font-black text-white px-2.5 py-0.5 rounded-xl shrink-0 w-11 text-center bg-[#18181b] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
@@ -408,9 +420,7 @@ export function HomeFeed({ followedEntities, recentMatches, upcomingMatches, rat
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="flex flex-col items-center justify-center w-8 h-8 rounded-full overflow-hidden shrink-0 border border-black shadow-sm">
-                          <TeamLogo src={rating.match.awayTeam.logoUrl} name={rating.match.awayTeam.name} className="w-full h-full object-contain" fallbackClassName="w-8 h-8 text-xs font-black" />
-                        </div>
+                        <TeamLogo src={rating.match.awayTeam.logoUrl} name={rating.match.awayTeam.name} className="w-8 h-8 object-contain" fallbackClassName="w-8 h-8 text-xs font-black" />
                         <span className="font-black text-base text-black line-clamp-1">{rating.match.awayTeam.name}</span>
                       </div>
                       <div className="font-mono text-xl font-black text-white px-2.5 py-0.5 rounded-xl shrink-0 w-11 text-center bg-[#18181b] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
@@ -422,12 +432,23 @@ export function HomeFeed({ followedEntities, recentMatches, upcomingMatches, rat
                   <div className="p-5 flex-1 flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div className="flex gap-0.5 bg-white px-2.5 py-1 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000]">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`w-4 h-4 ${star <= rating.stars ? 'fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000]' : 'fill-zinc-200 text-zinc-400'}`}
-                          />
-                        ))}
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const isFull = star <= rating.stars;
+                          const isHalf = !isFull && (star - 1 < rating.stars);
+                          return (
+                            <div key={star} className="relative w-4 h-4">
+                              <Star
+                                className={`w-4 h-4 absolute inset-0 stroke-[2] ${isFull || isHalf ? 'drop-shadow-[1px_1px_0px_#000]' : ''} ${isFull ? 'fill-amber-400 text-black' : 'fill-white text-black'}`}
+                              />
+                              {isHalf && (
+                                <Star
+                                  className="w-4 h-4 absolute inset-0 stroke-[2] fill-amber-400 text-black drop-shadow-[1px_1px_0px_#000] z-10"
+                                  style={{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)' }}
+                                />
+                              )}
+                            </div>
+                          )
+                        })}
                       </div>
                       <span className="text-xs font-black text-black uppercase tracking-widest bg-white px-2.5 py-1 rounded-xl border border-black shadow-[2px_2px_0px_0px_#000]">
                         <FormattedDate date={rating.watchedAt} options={{ month: 'short', day: 'numeric', year: 'numeric' }} fallbackFormat="short" />

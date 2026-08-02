@@ -7,51 +7,42 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String?  @unique
-  createdAt DateTime @default(now())
-
-  ratings          Rating[]
-  lists            MatchList[]
+  id               String           @id @default(cuid())
+  username         String           @unique
+  email            String?          @unique
+  createdAt        DateTime         @default(now())
   followedEntities FollowedEntity[]
+  lists            MatchList[]
+  ratings          Rating[]
 }
 
 model Team {
-  id         String  @id @default(cuid())
-  externalId String  @unique // ID from the sports API
-  name       String
-  logoUrl    String?
-  country    String?
-
-  homeMatches Match[] @relation("HomeTeam")
+  id          String  @id @default(cuid())
+  externalId  String  @unique
+  name        String
+  logoUrl     String?
+  country     String?
   awayMatches Match[] @relation("AwayTeam")
+  homeMatches Match[] @relation("HomeTeam")
 }
 
 model Match {
-  id          String   @id @default(cuid())
-  externalId  String   @unique // ID from the sports API, used to avoid re-fetching
-  sport       String   @default("football")
+  id          String          @id @default(cuid())
+  externalId  String          @unique
+  sport       String          @default("football")
   competition String
   season      String?
   matchDate   DateTime
-
   homeTeamId  String
-  homeTeam    Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
   awayTeamId  String
-  awayTeam    Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
-
   homeScore   Int?
   awayScore   Int?
-
-  // Full raw stats payload from the API (lineups, cards, xG, etc.)
-  // Keeping this as JSON means adding new stat types never requires a migration.
   statsJson   Json?
-
-  createdAt   DateTime @default(now())
-
-  ratings     Rating[]
+  createdAt   DateTime        @default(now())
+  awayTeam    Team            @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homeTeam    Team            @relation("HomeTeam", fields: [homeTeamId], references: [id])
   listItems   MatchListItem[]
+  ratings     Rating[]
 
   @@index([matchDate])
 }
@@ -59,39 +50,36 @@ model Match {
 model Rating {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
   matchId   String
-  match     Match    @relation(fields: [matchId], references: [id])
-
-  stars     Int      // 1–5 (consider storing as 1–10 internally if you want half-stars)
+  stars     Float
   review    String?
-  tags      String[] @default([])
-  watchedAt DateTime @default(now()) // date the user logged/watched it, distinct from matchDate
-
+  watchedAt DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  tags      String[] @default([])
+  match     Match    @relation(fields: [matchId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
-  @@unique([userId, matchId]) // one rating per user per match
+  @@unique([userId, matchId])
 }
 
 model MatchList {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
   title       String
   description String?
-  createdAt   DateTime @default(now())
-
+  createdAt   DateTime        @default(now())
+  user        User            @relation(fields: [userId], references: [id])
   items       MatchListItem[]
 }
 
 model MatchListItem {
-  id        String    @id @default(cuid())
-  listId    String
-  list      MatchList @relation(fields: [listId], references: [id])
-  matchId   String
-  match     Match     @relation(fields: [matchId], references: [id])
-  order     Int       @default(0)
+  id      String    @id @default(cuid())
+  listId  String
+  matchId String
+  order   Int       @default(0)
+  list    MatchList @relation(fields: [listId], references: [id])
+  match   Match     @relation(fields: [matchId], references: [id])
 
   @@unique([listId, matchId])
 }
@@ -99,13 +87,12 @@ model MatchListItem {
 model FollowedEntity {
   id         String   @id @default(cuid())
   userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  externalId String   // API ID (e.g. team ID, league ID, or country name/ID)
-  name       String   // e.g. "Arsenal", "Premier League", "England"
-  type       String   // "club" | "league" | "country"
+  externalId String
+  name       String
+  type       String
   logoUrl    String?
   createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, externalId, type])
 }
-

@@ -28,40 +28,41 @@ export async function fetchApi(endpoint: string, params: Record<string, string> 
 }
 
 const KNOWN_TEAM_BADGES: Record<string, string> = {
-  '133738': 'https://r2.thesportsdb.com/images/media/team/badge/7b8c2c1611746765.png',
-  'Real Madrid': 'https://r2.thesportsdb.com/images/media/team/badge/7b8c2c1611746765.png',
-  '133739': 'https://r2.thesportsdb.com/images/media/team/badge/s7754d1611746816.png',
-  'Barcelona': 'https://r2.thesportsdb.com/images/media/team/badge/s7754d1611746816.png',
+  '133738': 'https://r2.thesportsdb.com/images/media/team/badge/vwvwrw1473502969.png',
+  'Real Madrid': 'https://r2.thesportsdb.com/images/media/team/badge/vwvwrw1473502969.png',
+  '133739': 'https://r2.thesportsdb.com/images/media/team/badge/wq9sir1639406443.png',
+  'Barcelona': 'https://r2.thesportsdb.com/images/media/team/badge/wq9sir1639406443.png',
   '133604': 'https://r2.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png',
   'Arsenal': 'https://r2.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png',
   '133613': 'https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png',
   'Manchester City': 'https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png',
   'Man City': 'https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png',
-  '133664': 'https://r2.thesportsdb.com/images/media/team/badge/qwvrst1467462947.png',
-  'Bayern Munich': 'https://r2.thesportsdb.com/images/media/team/badge/qwvrst1467462947.png',
-  '133601': 'https://r2.thesportsdb.com/images/media/team/badge/c8h4u51711200230.png',
-  'Liverpool': 'https://r2.thesportsdb.com/images/media/team/badge/c8h4u51711200230.png',
+  '133664': 'https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png',
+  'Bayern Munich': 'https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png',
+  '133601': 'https://www.thesportsdb.com/images/media/team/badge/97mehy1784645865.png',
+  'Liverpool': 'https://www.thesportsdb.com/images/media/team/badge/97mehy1784645865.png',
   '133612': 'https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png',
   'Manchester United': 'https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png',
   'Man United': 'https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png',
-  '133602': 'https://r2.thesportsdb.com/images/media/team/badge/yvwvtu1448813215.png',
-  'Chelsea': 'https://r2.thesportsdb.com/images/media/team/badge/yvwvtu1448813215.png',
-  '133676': 'https://r2.thesportsdb.com/images/media/team/badge/1x0l8r1546342898.png',
-  'Juventus': 'https://r2.thesportsdb.com/images/media/team/badge/1x0l8r1546342898.png',
-  '133714': 'https://r2.thesportsdb.com/images/media/team/badge/xwmqyv1448813264.png',
-  'Paris Saint-Germain': 'https://r2.thesportsdb.com/images/media/team/badge/xwmqyv1448813264.png',
-  'PSG': 'https://r2.thesportsdb.com/images/media/team/badge/xwmqyv1448813264.png',
-  '133667': 'https://r2.thesportsdb.com/images/media/team/badge/qspvwq1448813337.png',
-  'AC Milan': 'https://r2.thesportsdb.com/images/media/team/badge/qspvwq1448813337.png',
-  '133666': 'https://r2.thesportsdb.com/images/media/team/badge/xrqsyv1448813350.png',
-  'Inter Milan': 'https://r2.thesportsdb.com/images/media/team/badge/xrqsyv1448813350.png',
-  '133665': 'https://r2.thesportsdb.com/images/media/team/badge/wrvrup1448813155.png',
-  'Borussia Dortmund': 'https://r2.thesportsdb.com/images/media/team/badge/wrvrup1448813155.png',
-  '133729': 'https://r2.thesportsdb.com/images/media/team/badge/yqvvsq1448813386.png',
-  'Atletico Madrid': 'https://r2.thesportsdb.com/images/media/team/badge/yqvvsq1448813386.png',
-  '133616': 'https://r2.thesportsdb.com/images/media/team/badge/wsqxtx1448813233.png',
-  'Tottenham Hotspur': 'https://r2.thesportsdb.com/images/media/team/badge/wsqxtx1448813233.png',
-  'Tottenham': 'https://r2.thesportsdb.com/images/media/team/badge/wsqxtx1448813233.png',
+  '133602': 'https://r2.thesportsdb.com/images/media/team/badge/kfaher1737969724.png',
+  'Chelsea': 'https://r2.thesportsdb.com/images/media/team/badge/kfaher1737969724.png',
+  '133676': 'https://r2.thesportsdb.com/images/media/team/badge/uxf0gr1742983727.png',
+  'Juventus': 'https://r2.thesportsdb.com/images/media/team/badge/uxf0gr1742983727.png',
+  '133714': 'https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png',
+  'Paris Saint-Germain': 'https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png',
+  'PSG': 'https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png',
+  '133667': 'https://r2.thesportsdb.com/images/media/team/badge/wvspur1448806617.png',
+  'AC Milan': 'https://r2.thesportsdb.com/images/media/team/badge/wvspur1448806617.png',
+  '133666': 'https://r2.thesportsdb.com/images/media/team/badge/3x9k851726760113.png',
+  'Inter Milan': 'https://r2.thesportsdb.com/images/media/team/badge/3x9k851726760113.png',
+  '133681': 'https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png',
+  '133665': 'https://r2.thesportsdb.com/images/media/team/badge/fhm9v51552134916.png',
+  'Borussia Dortmund': 'https://r2.thesportsdb.com/images/media/team/badge/fhm9v51552134916.png',
+  '133729': 'https://r2.thesportsdb.com/images/media/team/badge/0ulh3q1719984315.png',
+  'Atletico Madrid': 'https://r2.thesportsdb.com/images/media/team/badge/0ulh3q1719984315.png',
+  '133616': 'https://r2.thesportsdb.com/images/media/team/badge/dfyfhl1604094109.png',
+  'Tottenham Hotspur': 'https://r2.thesportsdb.com/images/media/team/badge/dfyfhl1604094109.png',
+  'Tottenham': 'https://r2.thesportsdb.com/images/media/team/badge/dfyfhl1604094109.png',
 };
 
 function mapEventToApiFootballFormat(event: any, customLogos: Record<string, string> = {}) {
@@ -79,15 +80,15 @@ function mapEventToApiFootballFormat(event: any, customLogos: Record<string, str
 
   const homeId = String(event.idHomeTeam || 'unknown-home');
   const homeName = event.strHomeTeam || 'Unknown';
-  const homeLogo = event.strHomeTeamBadge || customLogos[homeId] || customLogos[homeName] || KNOWN_TEAM_BADGES[homeId] || KNOWN_TEAM_BADGES[homeName] || '';
+  const homeLogo = customLogos[homeId] || customLogos[homeName] || KNOWN_TEAM_BADGES[homeId] || KNOWN_TEAM_BADGES[homeName] || event.strHomeTeamBadge || '';
 
   const awayId = String(event.idAwayTeam || 'unknown-away');
   const awayName = event.strAwayTeam || 'Unknown';
-  const awayLogo = event.strAwayTeamBadge || customLogos[awayId] || customLogos[awayName] || KNOWN_TEAM_BADGES[awayId] || KNOWN_TEAM_BADGES[awayName] || '';
+  const awayLogo = customLogos[awayId] || customLogos[awayName] || KNOWN_TEAM_BADGES[awayId] || KNOWN_TEAM_BADGES[awayName] || event.strAwayTeamBadge || '';
 
   return {
     fixture: {
-      id: event.idEvent || '',
+      id: event.idEvent || event.id || '',
       date: dateStr,
       status: {
         short: status

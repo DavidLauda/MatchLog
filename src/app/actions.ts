@@ -6,7 +6,10 @@ import { getFixtureDetails } from '@/lib/thesportsdb'
 
 export async function logMatchRating(formData: FormData) {
   const matchId = formData.get('matchId') as string
-  const stars = parseInt(formData.get('stars') as string, 10)
+  const starsRaw = formData.get('stars') as string
+  const stars = parseFloat(starsRaw)
+  console.log(">>> LOG MATCH RATING CALLED: raw:", starsRaw, "parsed:", stars)
+  
   const review = formData.get('review') as string
   const tagsString = formData.get('tags') as string
   const tags = tagsString ? tagsString.split(',').map(t => t.trim()).filter(Boolean) : []
@@ -81,6 +84,7 @@ export async function logMatchRating(formData: FormData) {
   })
 
   revalidatePath('/')
+  revalidatePath('/profile')
   revalidatePath(`/match/${matchId}`)
 }
 
@@ -89,6 +93,7 @@ export async function deleteMatchRating(ratingId: string) {
     where: { id: ratingId }
   })
   revalidatePath('/')
+  revalidatePath('/profile')
 }
 
 export async function createList(formData: FormData) {
