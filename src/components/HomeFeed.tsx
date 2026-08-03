@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { FollowButton } from './FollowButton'
 import { TeamLogo } from './TeamLogo'
 import { FormattedDate } from './FormattedDate'
+import { Statty } from './Statty'
 
 interface HomeFeedProps {
   followedEntities: any[];
@@ -49,6 +50,8 @@ export function HomeFeed({ followedEntities, recentMatches, upcomingMatches, rat
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <Statty ratings={ratings} />
+
       {/* Onboarding Starter Kit if following nothing */}
       {followedEntities.length === 0 && (
         <div className="bg-[#fef9c3] border-[3px] border-black rounded-3xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_#000] space-y-6">

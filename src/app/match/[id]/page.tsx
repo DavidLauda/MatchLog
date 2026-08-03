@@ -1,6 +1,6 @@
-import { getFixtureDetails, getEventStats, getLineups } from '@/lib/thesportsdb'
+import { getFixtureDetails, getLineups } from '@/lib/thesportsdb'
 import prisma from '@/lib/prisma'
-import { logMatchRating, deleteMatchRating, addMatchToList, checkIsFollowing } from '@/app/actions'
+import { logMatchRating, deleteMatchRating, addMatchToList, checkIsFollowing, getOrFetchMatchStats } from '@/app/actions'
 import { StarRating } from '@/components/StarRating'
 import { FollowButton } from '@/components/FollowButton'
 import { TeamLogo } from '@/components/TeamLogo'
@@ -110,13 +110,19 @@ export default async function MatchPage({
   const user = await prisma.user.findFirst()
   const lists = user ? await prisma.matchList.findMany({ where: { userId: user.id } }) : []
 
-  let [details, stats, lineups, isHomeFollowed, isAwayFollowed] = await Promise.all([
+  let [details, lineups] = await Promise.all([
     getFixtureDetails(id),
-    getEventStats(id),
     getLineups(id),
-    getFixtureDetails(id).then(d => d ? checkIsFollowing(d.teams.home.id, 'club') : false),
-    getFixtureDetails(id).then(d => d ? checkIsFollowing(d.teams.away.id, 'club') : false)
   ])
+
+  let isHomeFollowed = false
+  let isAwayFollowed = false
+  if (details) {
+    [isHomeFollowed, isAwayFollowed] = await Promise.all([
+      checkIsFollowing(details.teams.home.id, 'club'),
+      checkIsFollowing(details.teams.away.id, 'club')
+    ])
+  }
 
   // If match exists in DB, check if API data matches or is missing. If mismatch/missing, use local DB data (legacy match fallback).
   if (match) {
@@ -150,7 +156,6 @@ export default async function MatchPage({
           away: match.awayScore
         }
       }
-      stats = []
       lineups = []
       
       const [homeF, awayF] = await Promise.all([
@@ -175,6 +180,23 @@ export default async function MatchPage({
 
   const homeLineup = lineups.filter((l: any) => l.strHome === "Yes").sort((a: any, b: any) => parseInt(a.intSquadNumber || '0') - parseInt(b.intSquadNumber || '0'))
   const awayLineup = lineups.filter((l: any) => l.strHome === "No").sort((a: any, b: any) => parseInt(a.intSquadNumber || '0') - parseInt(b.intSquadNumber || '0'))
+
+  let stats: any[] = []
+  if (details) {
+    stats = await getOrFetchMatchStats(id, details.fixture.date, details.teams.home.name, details.teams.away.name)
+  }
+
+  const homeStats = stats.find(s => s.team.name.toLowerCase() === details.teams.home.name.toLowerCase())?.statistics || stats[0]?.statistics || [];
+  const awayStats = stats.find(s => s.team.name.toLowerCase() === details.teams.away.name.toLowerCase())?.statistics || stats[1]?.statistics || [];
+
+  const combinedStats = homeStats.map((hs: any, index: number) => {
+    const as = awayStats[index];
+    return {
+      type: hs.type,
+      homeValue: hs.value !== null ? hs.value : '-',
+      awayValue: as?.value !== null ? as?.value : '-'
+    }
+  }).filter((s: any) => s.homeValue !== '-' || s.awayValue !== '-');
 
   const existingRating = match?.ratings?.find((r: any) => r.userId === user?.id)
   const realOtherRatings = match?.ratings?.filter((r: any) => r.userId !== user?.id) || []
@@ -305,21 +327,18 @@ export default async function MatchPage({
               <span className="font-black text-black text-right">{details.fixture.venue?.name}, {details.fixture.venue?.city}</span>
             </div>
             
-            <div className="flex justify-between py-2 border-b-2 border-black">
-              <span className="text-zinc-600 font-bold">Referee</span>
-              <span className="font-black text-black text-right">{details.fixture.referee || 'Unknown'}</span>
-            </div>
+
           </div>
 
-          {stats && stats.length > 0 && (
+          {combinedStats && combinedStats.length > 0 && (
             <div className="bg-white border-[2.5px] border-black rounded-3xl p-6 space-y-4 shadow-[5px_5px_0px_0px_#000]">
               <h3 className="text-lg font-black text-black mb-4">Match Statistics</h3>
               <div className="space-y-3">
-                {stats.map((stat: any) => (
-                  <div key={stat.idStatistic} className="flex items-center justify-between py-2 border-b-2 border-black text-sm">
-                    <span className="w-12 text-center font-black text-black bg-[#fef9c3] px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000]">{stat.intHome}</span>
-                    <span className="flex-1 text-center font-bold text-black">{stat.strStat}</span>
-                    <span className="w-12 text-center font-black text-black bg-[#fef9c3] px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000]">{stat.intAway}</span>
+                {combinedStats.map((stat: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between py-2 border-b-2 border-black text-sm">
+                    <span className="w-12 text-center font-black text-black bg-[#fef9c3] px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000]">{stat.homeValue}</span>
+                    <span className="flex-1 text-center font-bold text-black">{stat.type}</span>
+                    <span className="w-12 text-center font-black text-black bg-[#fef9c3] px-2 py-0.5 rounded-lg border border-black shadow-[1px_1px_0px_0px_#000]">{stat.awayValue}</span>
                   </div>
                 ))}
               </div>

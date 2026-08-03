@@ -246,4 +246,30 @@ export async function deleteList(listId: string) {
   revalidatePath('/lists')
 }
 
-
+export async function getOrFetchMatchStats(matchExternalId: string, dateIso: string, homeTeam: string, awayTeam: string) {
+  const match = await prisma.match.findUnique({
+    where: { externalId: matchExternalId }
+  })
+  
+  // Check if we have valid API-Football stats cached (API-Football stats are an array)
+  if (match?.statsJson && Array.isArray(match.statsJson) && match.statsJson.length > 0 && (match.statsJson[0] as any).team) {
+    return match.statsJson;
+  }
+  
+  // Fetch from API-Football
+  const { getDetailedMatchStats } = await import('@/lib/api-football')
+  const stats = await getDetailedMatchStats(dateIso, homeTeam, awayTeam)
+  
+  if (stats && stats.length > 0) {
+    // Cache it if the match exists in the DB
+    if (match) {
+      await prisma.match.update({
+        where: { id: match.id },
+        data: { statsJson: stats }
+      })
+    }
+    return stats;
+  }
+  
+  return [];
+}
