@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffef9; /* warm off-white cream */
-  --foreground: #18181b; /* solid black/charcoal */
+  color-scheme: light;
+  --retro-bg: #fffef9; /* warm off-white cream */
+  --retro-fg: #18181b; /* solid black/charcoal */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--retro-bg);
+  --color-foreground: var(--retro-fg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-color: var(--retro-bg) !important;
+  color: var(--retro-fg) !important;
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
 }
 
 /* Rubber Hose / Gumdrop / Neo-Brutalism Design Tokens */
