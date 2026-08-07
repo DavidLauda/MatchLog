@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getFixtureDetails } from '@/lib/thesportsdb'
+import { getUserFromSession } from '@/lib/auth'
 
 export async function logMatchRating(formData: FormData) {
   const matchId = formData.get('matchId') as string
@@ -11,6 +12,7 @@ export async function logMatchRating(formData: FormData) {
   console.log(">>> LOG MATCH RATING CALLED: raw:", starsRaw, "parsed:", stars)
   
   const review = formData.get('review') as string
+  const manOfTheMatch = formData.get('manOfTheMatch') as string
   const tagsString = formData.get('tags') as string
   const tags = tagsString ? tagsString.split(',').map(t => t.trim()).filter(Boolean) : []
   
@@ -18,12 +20,8 @@ export async function logMatchRating(formData: FormData) {
     throw new Error('Missing matchId or stars')
   }
 
-  let user = await prisma.user.findFirst()
-  if (!user) {
-    user = await prisma.user.create({
-      data: { username: 'demo_user', email: 'demo@example.com' }
-    })
-  }
+  const user = await getUserFromSession()
+  if (!user) throw new Error('Not authenticated')
 
   let match = await prisma.match.findUnique({ where: { externalId: matchId } })
   
@@ -73,12 +71,13 @@ export async function logMatchRating(formData: FormData) {
     where: {
       userId_matchId: { userId: user.id, matchId: match.id }
     },
-    update: { stars, review, tags },
+    update: { stars, review, manOfTheMatch, tags },
     create: {
       userId: user.id,
       matchId: match.id,
       stars,
       review,
+      manOfTheMatch,
       tags,
     }
   })
@@ -102,8 +101,8 @@ export async function createList(formData: FormData) {
 
   if (!title) throw new Error('Title is required')
 
-  const user = await prisma.user.findFirst()
-  if (!user) throw new Error('User not found')
+  const user = await getUserFromSession()
+  if (!user) throw new Error('Not authenticated')
 
   await prisma.matchList.create({
     data: {
@@ -116,8 +115,8 @@ export async function createList(formData: FormData) {
 }
 
 export async function addMatchToList(listId: string, matchId: string) {
-  const user = await prisma.user.findFirst()
-  if (!user) throw new Error('User not found')
+  const user = await getUserFromSession()
+  if (!user) throw new Error('Not authenticated')
 
   const list = await prisma.matchList.findUnique({ where: { id: listId } })
   if (!list || list.userId !== user.id) throw new Error('List not found')
@@ -161,12 +160,8 @@ export async function toggleFollow(externalId: string, name: string, type: strin
   if (!prisma.followedEntity) {
     throw new Error('Database client has not loaded the followedEntity model. Please restart npm run dev.')
   }
-  let user = await prisma.user.findFirst()
-  if (!user) {
-    user = await prisma.user.create({
-      data: { username: 'demo_user', email: 'demo@example.com' }
-    })
-  }
+  const user = await getUserFromSession()
+  if (!user) throw new Error('Not authenticated')
 
   const existing = await prisma.followedEntity.findUnique({
     where: {
@@ -205,7 +200,7 @@ export async function toggleFollow(externalId: string, name: string, type: strin
 
 export async function getFollowedEntities() {
   if (!prisma.followedEntity) return []
-  const user = await prisma.user.findFirst()
+  const user = await getUserFromSession()
   if (!user) return []
   return prisma.followedEntity.findMany({
     where: { userId: user.id },
@@ -215,7 +210,7 @@ export async function getFollowedEntities() {
 
 export async function checkIsFollowing(externalId: string, type: string) {
   if (!prisma.followedEntity) return false
-  const user = await prisma.user.findFirst()
+  const user = await getUserFromSession()
   if (!user) return false
   const existing = await prisma.followedEntity.findUnique({
     where: {
@@ -235,8 +230,8 @@ export async function searchTeamsAction(query: string) {
 }
 
 export async function deleteList(listId: string) {
-  const user = await prisma.user.findFirst()
-  if (!user) throw new Error('User not found')
+  const user = await getUserFromSession()
+  if (!user) throw new Error('Not authenticated')
 
   const list = await prisma.matchList.findUnique({ where: { id: listId } })
   if (!list || list.userId !== user.id) throw new Error('List not found')
@@ -246,30 +241,3 @@ export async function deleteList(listId: string) {
   revalidatePath('/lists')
 }
 
-export async function getOrFetchMatchStats(matchExternalId: string, dateIso: string, homeTeam: string, awayTeam: string) {
-  const match = await prisma.match.findUnique({
-    where: { externalId: matchExternalId }
-  })
-  
-  // Check if we have valid API-Football stats cached (API-Football stats are an array)
-  if (match?.statsJson && Array.isArray(match.statsJson) && match.statsJson.length > 0 && (match.statsJson[0] as any).team) {
-    return match.statsJson;
-  }
-  
-  // Fetch from API-Football
-  const { getDetailedMatchStats } = await import('@/lib/api-football')
-  const stats = await getDetailedMatchStats(dateIso, homeTeam, awayTeam)
-  
-  if (stats && stats.length > 0) {
-    // Cache it if the match exists in the DB
-    if (match) {
-      await prisma.match.update({
-        where: { id: match.id },
-        data: { statsJson: stats }
-      })
-    }
-    return stats;
-  }
-  
-  return [];
-}

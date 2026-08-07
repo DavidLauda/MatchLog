@@ -5,6 +5,8 @@ import { removeMatchFromList } from '@/app/actions'
 import { DeleteListButton } from '@/components/DeleteListButton'
 import { AddFromDiaryModal } from '@/components/AddFromDiaryModal'
 import { TeamLogo } from '@/components/TeamLogo'
+import { getUserFromSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 export default async function ListDetailPage({
   params,
@@ -13,22 +15,24 @@ export default async function ListDetailPage({
 }) {
   const { id } = await params
   
-  const [list, user] = await Promise.all([
-    prisma.matchList.findUnique({
-      where: { id },
-      include: {
-        items: {
-          include: {
-            match: {
-              include: { homeTeam: true, awayTeam: true }
-            }
-          },
-          orderBy: { order: 'asc' }
-        }
+  const user = await getUserFromSession()
+  if (!user) {
+    redirect('/login')
+  }
+
+  const list = await prisma.matchList.findUnique({
+    where: { id },
+    include: {
+      items: {
+        include: {
+          match: {
+            include: { homeTeam: true, awayTeam: true }
+          }
+        },
+        orderBy: { order: 'asc' }
       }
-    }),
-    prisma.user.findFirst()
-  ])
+    }
+  })
 
   if (!list) {
     return (

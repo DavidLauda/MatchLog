@@ -176,13 +176,29 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 self-start md:self-center shrink-0">
+          <div className="flex items-center flex-wrap gap-3 self-start md:self-center shrink-0">
+            <Link
+              href="/recap"
+              className="flex items-center gap-2 bg-[#ec4899] hover:bg-[#db2777] text-white px-4 py-2.5 rounded-2xl text-sm font-black border-2 border-black transition-all cursor-pointer shadow-[3px_3px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#000]"
+            >
+              <Sparkles className="w-4 h-4 stroke-[2.5]" />
+              <span>Play Recap</span>
+            </Link>
             <button
               onClick={() => setIsEditing(true)}
               className="flex items-center gap-2 bg-white hover:bg-zinc-100 text-black px-4 py-2.5 rounded-2xl text-sm font-black border-2 border-black transition-all cursor-pointer shadow-[3px_3px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#000]"
             >
               <Edit3 className="w-4 h-4 text-black stroke-[2.5]" />
-              <span>Edit Profile</span>
+              <span>Edit</span>
+            </button>
+            <button
+              onClick={async () => {
+                const { logout } = await import('@/app/actions/auth')
+                await logout()
+              }}
+              className="flex items-center gap-2 bg-[#fda4af] hover:bg-red-400 text-black px-4 py-2.5 rounded-2xl text-sm font-black border-2 border-black transition-all cursor-pointer shadow-[3px_3px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#000]"
+            >
+              <span>Log Out</span>
             </button>
             <button
               onClick={handleShare}
@@ -507,6 +523,11 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
                       </div>
                     </div>
 
+                    {topRatedMatch.manOfTheMatch && (
+                      <div className="mt-3 text-xs font-black text-black bg-[#a3e635] border-2 border-black px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_#000] inline-block">
+                        🏅 MotM: {topRatedMatch.manOfTheMatch}
+                      </div>
+                    )}
                     {topRatedMatch.review && (
                       <p className="text-xs text-black font-bold italic line-clamp-2 mt-3 bg-white p-3 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_#000]">
                         &ldquo;{topRatedMatch.review}&rdquo;
@@ -648,6 +669,11 @@ export function ProfileDashboard({ user, ratings, lists, followedEntities }: Pro
                           </span>
                         </div>
 
+                        {rating.manOfTheMatch && (
+                          <div className="mt-2 text-[11px] font-black text-black bg-[#a3e635] border border-black px-2 py-1 rounded-lg shadow-[1px_1px_0px_0px_#000] inline-block">
+                            🏅 MotM: {rating.manOfTheMatch}
+                          </div>
+                        )}
                         {rating.review && (
                           <p className="text-xs text-black font-bold line-clamp-2 italic bg-white p-2.5 rounded-xl border border-black shadow-[1px_1px_0px_0px_#000] mt-2 leading-relaxed">
                             &ldquo;{rating.review}&rdquo;

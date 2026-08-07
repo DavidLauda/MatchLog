@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Trophy, Search, User } from 'lucide-react'
 import { getFollowedEntities } from '@/app/actions'
 import { NavFollowHub } from '@/components/NavFollowHub'
+import { getUserFromSession } from '@/lib/auth'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,6 +19,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const user = await getUserFromSession()
   const followedEntities = await getFollowedEntities()
   const initialFollows = followedEntities.map(f => ({ externalId: f.externalId, type: f.type }))
 
@@ -41,28 +43,39 @@ export default async function RootLayout({
               
               {/* Actions */}
               <nav className="flex items-center gap-3 sm:gap-4">
-                <NavFollowHub initialFollows={initialFollows} />
-                <Link 
-                  href="/lists" 
-                  className="text-sm font-black text-zinc-800 hover:text-black hover:underline decoration-2 underline-offset-4 transition-all hidden sm:block"
-                >
-                  Lists
-                </Link>
-                <Link 
-                  href="/profile" 
-                  className="flex items-center gap-1.5 text-sm font-black text-zinc-800 hover:text-black hover:underline decoration-2 underline-offset-4 transition-all hidden sm:flex"
-                >
-                  <User className="w-4 h-4 text-black stroke-[2.5]" />
-                  <span>Profile</span>
-                </Link>
-                <Link 
-                  href="/search" 
-                  className="flex items-center gap-2 bg-[#18181b] hover:bg-zinc-800 text-white font-black border-2 border-black rounded-2xl px-4 py-2 shadow-[3px_3px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] transition-all text-sm"
-                >
-                  <Search className="w-4 h-4 stroke-[2.5]" />
-                  <span className="hidden sm:inline">Log Match</span>
-                  <span className="sm:hidden">Log</span>
-                </Link>
+                {user ? (
+                  <>
+                    <NavFollowHub initialFollows={initialFollows} />
+                    <Link 
+                      href="/lists" 
+                      className="text-sm font-black text-zinc-800 hover:text-black hover:underline decoration-2 underline-offset-4 transition-all hidden sm:block"
+                    >
+                      Lists
+                    </Link>
+                    <Link 
+                      href="/profile" 
+                      className="flex items-center gap-1.5 text-sm font-black text-zinc-800 hover:text-black hover:underline decoration-2 underline-offset-4 transition-all hidden sm:flex"
+                    >
+                      <User className="w-4 h-4 text-black stroke-[2.5]" />
+                      <span>Profile</span>
+                    </Link>
+                    <Link 
+                      href="/search" 
+                      className="flex items-center gap-2 bg-[#18181b] hover:bg-zinc-800 text-white font-black border-2 border-black rounded-2xl px-4 py-2 shadow-[3px_3px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] transition-all text-sm"
+                    >
+                      <Search className="w-4 h-4 stroke-[2.5]" />
+                      <span className="hidden sm:inline">Log Match</span>
+                      <span className="sm:hidden">Log</span>
+                    </Link>
+                  </>
+                ) : (
+                  <Link 
+                    href="/login" 
+                    className="flex items-center gap-2 bg-[#18181b] hover:bg-zinc-800 text-white font-black border-2 border-black rounded-2xl px-4 py-2 shadow-[3px_3px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] transition-all text-sm"
+                  >
+                    <span>Log In</span>
+                  </Link>
+                )}
               </nav>
             </div>
           </div>

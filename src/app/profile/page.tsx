@@ -2,6 +2,8 @@ import prisma from '@/lib/prisma'
 import { getFollowedEntities } from '@/app/actions'
 import { ProfileDashboard } from '@/components/ProfileDashboard'
 import type { Metadata } from 'next'
+import { getUserFromSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Profile & Analytics — MatchLog',
@@ -9,11 +11,9 @@ export const metadata: Metadata = {
 }
 
 export default async function ProfilePage() {
-  let user = await prisma.user.findFirst()
+  const user = await getUserFromSession()
   if (!user) {
-    user = await prisma.user.create({
-      data: { username: 'demo_user', email: 'demo@example.com' }
-    })
+    redirect('/login')
   }
 
   const [ratings, lists, followedEntities] = await Promise.all([

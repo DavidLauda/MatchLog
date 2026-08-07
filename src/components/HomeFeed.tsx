@@ -457,6 +457,11 @@ export function HomeFeed({ followedEntities, recentMatches, upcomingMatches, rat
                         <FormattedDate date={rating.watchedAt} options={{ month: 'short', day: 'numeric', year: 'numeric' }} fallbackFormat="short" />
                       </span>
                     </div>
+                    {rating.manOfTheMatch && (
+                      <div className="text-xs font-black text-black bg-[#a3e635] border-2 border-black px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_#000] inline-block mb-1">
+                        🏅 MotM: {rating.manOfTheMatch}
+                      </div>
+                    )}
                     {rating.review && (
                       <p className="text-sm text-black font-bold line-clamp-2 leading-relaxed bg-white p-3.5 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_#000]">
                         &ldquo;{rating.review}&rdquo;

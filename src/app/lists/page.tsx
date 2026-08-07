@@ -4,24 +4,29 @@ import { Plus, List as ListIcon, ArrowRight } from 'lucide-react'
 import { createList } from '@/app/actions'
 import { DeleteListButton } from '@/components/DeleteListButton'
 import { AddFromDiaryModal } from '@/components/AddFromDiaryModal'
+import { getUserFromSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 export default async function ListsPage() {
-  const [lists, user] = await Promise.all([
-    prisma.matchList.findMany({
-      include: {
-        _count: {
-          select: { items: true }
-        },
-        items: {
-          select: { matchId: true }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    }),
-    prisma.user.findFirst()
-  ])
+  const user = await getUserFromSession()
+  if (!user) {
+    redirect('/login')
+  }
 
-  const diaryRatings = user ? await prisma.rating.findMany({
+  const lists = await prisma.matchList.findMany({
+    where: { userId: user.id },
+    include: {
+      _count: {
+        select: { items: true }
+      },
+      items: {
+        select: { matchId: true }
+      }
+    },
+    orderBy: { createdAt: 'desc' }
+  })
+
+  const diaryRatings = await prisma.rating.findMany({
     where: { userId: user.id },
     include: {
       match: {
@@ -29,7 +34,7 @@ export default async function ListsPage() {
       }
     },
     orderBy: { watchedAt: 'desc' }
-  }) : []
+  })
 
   const diaryMatches = diaryRatings.map(r => ({
     id: r.match.id,

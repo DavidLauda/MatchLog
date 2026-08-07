@@ -10,6 +10,7 @@ model User {
   id               String           @id @default(cuid())
   username         String           @unique
   email            String?          @unique
+  passwordHash     String?
   createdAt        DateTime         @default(now())
   followedEntities FollowedEntity[]
   lists            MatchList[]
@@ -38,6 +39,7 @@ model Match {
   homeScore   Int?
   awayScore   Int?
   statsJson   Json?
+  lineupsJson Json?
   createdAt   DateTime        @default(now())
   awayTeam    Team            @relation("AwayTeam", fields: [awayTeamId], references: [id])
   homeTeam    Team            @relation("HomeTeam", fields: [homeTeamId], references: [id])
@@ -51,10 +53,11 @@ model Rating {
   id        String   @id @default(cuid())
   userId    String
   matchId   String
-  stars     Float
-  review    String?
-  watchedAt DateTime @default(now())
-  createdAt DateTime @default(now())
+  stars         Float
+  review        String?
+  manOfTheMatch String?
+  watchedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
   updatedAt DateTime @updatedAt
   tags      String[] @default([])
   match     Match    @relation(fields: [matchId], references: [id])

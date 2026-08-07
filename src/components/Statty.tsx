@@ -16,7 +16,7 @@ export function Statty({ ratings }: StattyProps) {
 
   const message = useMemo(() => {
     if (ratings.length === 0) {
-      return "Tweet! I'm Statty! Start logging matches and I'll analyze your watching habits right here!"
+      return "Fweet! I'm Statty! Start logging matches and I'll analyze your watching habits right here!"
     }
 
     let totalGoals = 0
@@ -55,17 +55,17 @@ export function Statty({ ratings }: StattyProps) {
     const messages = []
 
     if (ratings.length > 0) {
-      messages.push(`Tweet! You've logged ${ratings.length} matches! Keep up the good work!`)
+      messages.push(`Fweet! You've logged ${ratings.length} matches! Keep up the good work!`)
     }
 
     if (ratings.length >= 2) {
-      messages.push(`Tweet! Your average match rating is ${avgRating} stars! ${parseFloat(avgRating) >= 4.0 ? 'You really know how to pick an absolute cinema of a match!' : 'Are you watching boring games lately?'}`)
+      messages.push(`Fweet! Your average match rating is ${avgRating} stars! ${parseFloat(avgRating) >= 4.0 ? 'You really know how to pick an absolute cinema of a match!' : 'Are you watching boring games lately?'}`)
       
-      messages.push(`Tweet! In ${ratings.length} matches, you've witnessed ${totalGoals} goals! That's an average of ${(totalGoals / ratings.length).toFixed(1)} goals per game!`)
+      messages.push(`Fweet! In ${ratings.length} matches, you've witnessed ${totalGoals} goals! That's an average of ${(totalGoals / ratings.length).toFixed(1)} goals per game!`)
     }
 
     if (maxTeamCount >= 2) {
-      messages.push(`Tweet! You've watched ${favoriteTeam} ${maxTeamCount} times! Are you trying to get scouted by them?`)
+      messages.push(`Fweet! You've watched ${favoriteTeam} ${maxTeamCount} times! Are you trying to get scouted by them?`)
     }
 
     // Stable rendering for SSR
